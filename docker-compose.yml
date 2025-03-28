@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+
+  app:
+    build: .
+    container_name: mi_app_python
+    depends_on:
+      - cassandra
+    environment:
+      - CASSANDRA_HOST=cassandra
+    volumes:
+      - ./data:/data
+    command: [ "python", "app.py" ]
+
+volumes:
+  cassandra_data:
